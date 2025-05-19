@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Text Data Analytics App</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        textarea {
+            width: 50%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #0ff;
+            background-color: #000;
+            color: #0ff;
+            outline: none;
+            box-shadow: 0 0 10px #0ff;
+            transition: 0.3s ease-in-out;
+        }
+        textarea:focus {
+            box-shadow: 0 0 20px #0ff, 0 0 40px #0ff;
+        }
+        .glass-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            font-size: 18px;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+        .glass-button:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.6);
+            transform: scale(1.05);
+        }
+        #results {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px #ff0, 0 0 20px #ff0;
+        }
+    </style>
+    <script>
+        async function analyzeText(event) {
+            event.preventDefault();
+            let text = document.getElementById("text-input").value;
+            if (!text) {
+                alert("Please enter some text.");
+                return;
+            }
+
+            let response = await fetch("/process", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: text })
+            });
+
+            let result = await response.json();
+            
+            document.getElementById("cleaned-text").innerText = "Cleaned Text: " + result.cleaned_text;
+            document.getElementById("sentiment").innerText = "Sentiment: " + result.sentiment;
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to Text Data Analytics App</h1>
+    <p>Enter text to analyze sentiment and classification:</p>
+
+    <form onsubmit="analyzeText(event)">
+        <textarea id="text-input" rows="4" cols="50" placeholder="Type your text here..."></textarea><br><br>
+        <button type="submit" class="glass-button">🔍 Analyze</button>
+    </form>
+
+    <div id="results">
+        <h2>Results:</h2>
+        <p id="cleaned-text">Cleaned Text: </p>
+        <p id="sentiment">Sentiment: </p>
+    </div>
+</body>
+</html>
